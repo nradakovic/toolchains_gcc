@@ -43,6 +43,11 @@ RUN apt-get update && apt-get install -y \
 RUN wget "http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-${VERSION}.tar.bz2"
 RUN mkdir ctng && tar -xf crosstool-ng-${VERSION}.tar.bz2 --strip-components=1 -C ctng
 
+RUN mv /ctng/packages/gcc/12.4.0 /ctng/packages/gcc/12.2.0
+RUN rm -rf /ctng/packages/gcc/12.2.0/chksum
+
+ADD 12.2.0/chksum /ctng/packages/gcc/12.2.0/chksum
+
 # Install the crosstool-ng tool
 RUN cd ctng && \
     ./bootstrap && \
