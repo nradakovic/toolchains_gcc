@@ -11,12 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-# TC Generator
-/tc_generator/.build
-/tc_generator/.config
-/tc_generator/build.log
-/tc_generator/output
-
-# Bazel
-MODULE.bazel.lock
-bazel-*
+exports_files([
+    "cc_toolchain_config.bzl",
+    "toolchain.BUILD",
+])
