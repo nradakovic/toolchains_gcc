@@ -11,12 +11,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-# Toolchain generator files
-/tc_generator/.build
-/tc_generator/.config
-/tc_generator/build.log
-/tc_generator/output
+""" TODO: Write docstrings
+"""
 
-# Bazel output
-bazel-*
-MODULE.bazel.lock
+load("@score_toolchains_gcc_tests//:features.bzl",
+    "strict_warnings_feature",
+    "third_party_warnings_feature",
+)
+
+strict_warnings_feature()
+third_party_warnings_feature()
+
+cc_binary(
+    name = "main_cpp",
+    srcs = ["main.cpp"],
+)

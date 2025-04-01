@@ -11,12 +11,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-# Toolchain generator files
-/tc_generator/.build
-/tc_generator/.config
-/tc_generator/build.log
-/tc_generator/output
+common --registry=https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/
+common --registry=https://bcr.bazel.build
 
-# Bazel output
-bazel-*
-MODULE.bazel.lock
+build:x86_64-linux --incompatible_strict_action_env
+build:x86_64-linux --platforms=@score_toolchains_gcc//platforms:x86_64-linux
+build:x86_64-linux --sandbox_writable_path=/var/tmp

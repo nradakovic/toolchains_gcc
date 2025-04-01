@@ -11,12 +11,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-# Toolchain generator files
-/tc_generator/.build
-/tc_generator/.config
-/tc_generator/build.log
-/tc_generator/output
+""" TODO: Write docstrings
+"""
+load(":debug_features.bzl")
+load(":features.bzl", "minimal_warnings")
+load(":strict_warnings_features.bzl", "strict_warnings")
 
-# Bazel output
-bazel-*
-MODULE.bazel.lock
+
+package(default_visibility = ["//visibility:public"])
+
+minimal_warnings()
