@@ -98,7 +98,7 @@ feature_info = rule(
             doc = "", # TODO: Write docstrings
         ),
         "enabled": attr.bool(
-            default = True,
+            default = False,
             doc = "", # TODO: Write docstrings
         ),
         "provides": attr.string_list(

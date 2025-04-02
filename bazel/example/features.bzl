@@ -14,11 +14,36 @@
 """ TODO: Write docstrings
 """
 
-load("score_toolchain_gcc//configs/common/actions.bzl", "all_compile_actions")
-load("score_toolchain_gcc//rules:features.bzl",
+load("@score_toolchain_gcc//preconfigured/common/actions.bzl",
+    "all_cpp_compile_actions",
+    "all_c_compile_actions",
+    "all_compile_actions",
+)
+load("@score_toolchain_gcc//rules/local:features.bzl",
     "flagset_info",
     "feature_info",
 )
+
+def minimal_warnings_feature():
+    """ TODO: Write docstrings
+    """
+    flagset_info(
+        name = "treat_warnings_as_errors_flags",
+        actions = all_compile_actions,
+        flags = [
+            "-Wall",
+            "-Wno-error=deprecated-declarations",
+        ],
+        not_features = [":third_party_warnings"],
+    )
+
+    feature_info(
+        name = "minimal_warnings",
+        enabled = True,
+        flag_sets = [
+            ":minimal_warnings_flags",
+        ]
+    )
 
 def strict_warnings():
     """ TODO: Write docstrings
@@ -69,4 +94,24 @@ def third_party_warnings():
         name = "third_party_warnings",
         flag_sets = [":third_party_warnings_flags"],
         index = 10,
+    )
+
+def treat_warnings_as_errors_feature():
+    """ TODO: Write docstrings
+    """
+    flagset_info(
+        name = "treat_warnings_as_errors_flags",
+        actions = all_compile_actions,
+        flags = [
+            "-Werror",
+        ],
+        not_features = [":third_party_warnings"],
+    )
+
+    feature_info(
+        name = "treat_warnings_as_errors",
+        enabled = True,
+        flag_sets = [
+            ":treat_warnings_as_errors_flags"
+        ]
     )
