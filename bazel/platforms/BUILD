@@ -11,12 +11,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-# TC Generator
-/tc_generator/.build
-/tc_generator/.config
-/tc_generator/build.log
-/tc_generator/output
-
-# Bazel
-MODULE.bazel.lock
-bazel-*
+platform(
+    name = "x86_64-linux",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    visibility = ["//visibility:public"],
+)
