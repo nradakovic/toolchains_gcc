@@ -1,2 +1,61 @@
-# toolchains_gcc
-Bazel toolchains for GNU GCC
+# Using the S-CORE Host GCC C++ Toolchains (via bzlmod)
+
+This guide explains how to use the GCC C++ Toolchain provided in S-CORE GCC Toolchain repository via Bzlmod (Bazel Modules). The toolchain supports Linux-based GCC cross-compilation and is designed to integrate easily into Bazel-based C++ projects.
+
+## Declaring the Toolchain as a Dependency
+
+To include the toolchain in any project (module), a project needs to declare dependency to the toolchain. This is done by updating projects MODULE.bazel file:
+```python
+bazel_dep(name = "score_toolchains_gcc", version = "0.1")
+```
+
+## Configuring the toolchain to a project needs
+The `score_toolchains_gcc` module currently supports only GNU GCC version **12.2.0**. Support for multiple GCC versions is planned, with future versions expected to be selectable via an extended toolchain interface. As of now, version 12.2.0 is the sole supported target.
+
+The module exposes an API that allows consumers to enable or disable specific toolchain behaviors related to compilation diagnostics. The following features can be individually configured:
+
+1. Minimal warning flags — enables a basic set of compiler warnings
+2. Strict warning flags — enables a more aggressive set of warnings (e.g., `-Wall, -Wextra`)
+3. A `treat warnings as errors` flags — promotes all warnings to errors (e.g., `-Werror`)
+
+These features provide fine-grained control over the compiler's warning policy. If no features are explicitly selected, the toolchain will apply no additional warning-related flags by default.
+
+To set wanted flags, the following API needs to be used:
+```python
+gcc = use_extension("@score_toolchains_gcc//extentions:gcc.bzl", "gcc")
+gcc.extra_features(
+    features = [
+        "minimal_warnings",
+        "treat_warnings_as_errors",
+    ],
+)
+gcc.warning_flags(
+    minimal_warnings = ["-Wall", "-Wno-error=deprecated-declarations"],
+    strict_warnings = ["-Wextra", "-Wpedantic"],
+    treat_warnings_as_errors = ["-Werror"],
+)
+use_repo(gcc, "gcc_toolchain", "gcc_toolchain_gcc")
+```
+* `extra_features` - This will enable all features which are set in the list.
+* `warning_flags` - This will set flags for selected features.
+
+## Toolchain Registration
+Toolchain registration can be performed either directly in a MODULE.bazel file or globally through .bazelrc.
+When registering in MODULE.bazel:
+```python
+register_toolchains("@gcc_toolchain//:host_gcc_12")
+```
+Or when registering globally:
+```bash
+build --extra_toolchains=@gcc_toolchain//:host_gcc_12
+```
+
+## Example Usage
+A minimal Bazel project demonstrating use of the toolchain can be found in the [test/](https://github.com/eclipse-score/toolchains_gcc/tree/main/bazel/test) directory of this module.
+
+##  Compatibility
+✅ Bazel version 6.x or newer (with Bzlmod enabled)
+
+✅ Linux hosts
+
+⚠️ Native support for macOS and Windows is currently not provided
