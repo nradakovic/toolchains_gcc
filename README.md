@@ -1,13 +1,29 @@
-# Using the S-CORE Host GCC C++ Toolchains (via bzlmod)
+# Using the S-CORE Host GCC C++ Toolchains
 
-This guide explains how to use the GCC C++ Toolchain provided in S-CORE GCC Toolchain repository via Bzlmod (Bazel Modules). The toolchain supports Linux-based GCC cross-compilation and is designed to integrate easily into Bazel-based C++ projects.
+This guide explains how to use the GCC C++ Toolchain provided in S-CORE GCC Toolchain repository. The toolchain supports Linux-based GCC cross-compilation and is designed to integrate easily into Bazel-based C++ projects. 
 
-## Declaring the Toolchain as a Dependency
+> NOTE: The support for WORKSPACE file servers only as backup for projects/modules that are currently migrating to bzlmod and such should not be used in newly established projects.
+
+## Declaring the Toolchain as a Dependency (via bzlmod)
 
 To include the toolchain in any project (module), a project needs to declare dependency to the toolchain. This is done by updating projects MODULE.bazel file:
 ```python
-bazel_dep(name = "score_toolchains_gcc", version = "0.1")
+# MODULE.bazel
+
+bazel_dep(name = "score_toolchains_gcc", version = "X.Y") # where the X and Y are version numbers.
 ```
+
+## Declaring the Toolchain as a Dependency (via WORKSPACE)
+To include the toolchain in any project, a project WORKSPACE file needs to collect all dependency which toolchain has:
+```python
+# WORKSPACE
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(name = "score_toolchains_gcc", . . .)
+
+load("@score_toolchains_gcc//:deps.bzl", "toolchain_gcc_dependencies")
+toolchain_gcc_dependencies()
+``` 
 
 ## Configuring the toolchain to a project needs
 The `score_toolchains_gcc` module currently supports only GNU GCC version **12.2.0**. Support for multiple GCC versions is planned, with future versions expected to be selectable via an extended toolchain interface. As of now, version 12.2.0 is the sole supported target.
@@ -38,6 +54,25 @@ use_repo(gcc, "gcc_toolchain", "gcc_toolchain_gcc")
 ```
 * `extra_features` - This will enable all features which are set in the list.
 * `warning_flags` - This will set flags for selected features.
+
+### Using WORKSPACE file
+The same approuch needs to be done when configuring toolchain over WORKSPACE file:
+```python
+load("@score_toolchains_gcc//rules:gcc.bzl", "gcc_toolchain")
+gcc_toolchain(
+    name = "gcc_toolchain",
+    gcc_repo = "gcc_toolchain_gcc",
+    extra_features = [
+        "minimal_warnings",
+        "treat_warnings_as_errors",
+    ],
+    warning_flags = {
+        "minimal_warnings": ["-Wall", "-Wno-error=deprecated-declarations"],
+        "strict_warnings": ["-Wextra", "-Wpedantic"],
+        "treat_warnings_as_errors": ["-Werror"],
+    },
+)
+```
 
 ## Toolchain Registration
 Toolchain registration can be performed either directly in a MODULE.bazel file or globally through .bazelrc.
