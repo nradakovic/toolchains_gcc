@@ -211,6 +211,9 @@ def _impl(ctx):
     )
 
     linker_flags = [
+        "-lm",
+        "-ldl",
+        "-lrt",
         "-static-libstdc++",
         "-static-libgcc",
     ]
