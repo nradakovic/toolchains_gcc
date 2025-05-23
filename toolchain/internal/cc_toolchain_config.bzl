@@ -48,6 +48,9 @@ def _impl(ctx):
     dbg_feature = feature(name = "dbg")
     opt_feature = feature(name = "opt")
 
+    supports_dynamic_linker_feature = feature(name = "supports_dynamic_linker", enabled = True)
+    supports_fission_feature = feature(name = "supports_fission", enabled = True)
+
     assemble_action = action_config(
         action_name = ACTION_NAMES.assemble,
         tools = [tool(tool = ctx.executable.cc_binary)],
@@ -341,9 +344,11 @@ def _impl(ctx):
         minimal_warnings_feature,
         opt_feature,
         strict_warnings_feature,
+        supports_dynamic_linker_feature,
         supports_pic_feature,
         treat_warnings_as_errors_feature,
         unfiltered_compile_flags_feature,
+        supports_fission_feature,
     ]
 
     if ctx.attr.flavour == "gcc":
