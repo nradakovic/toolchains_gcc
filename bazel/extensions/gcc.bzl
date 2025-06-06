@@ -59,7 +59,7 @@ def _gcc_impl(mctx):
 gcc = module_extension(
     implementation = _gcc_impl,
     tag_classes = {
-        "toolchain": tag_class(
+        "toolchain_pkg": tag_class(
             attrs = {
                 "name": attr.string(doc = "Same name as the toolchain tag.", default="gcc_toolchain"),
                 "url": attr.string(doc = "Url to the toolchain package."),
@@ -67,11 +67,23 @@ gcc = module_extension(
                 "sha256": attr.string(doc = "Checksum of the package"),
             },
         ),
-        "feature_list": tag_class(
+        "compiler": tag_class(
             attrs = {
-                "name": attr.string(doc = "Same name as the toolchain tag.", default="gcc_toolchain"),
-                "features": attr.string_list(
-                    doc = "List of extra compiler and linker features.",
+                "name": attr.string()
+                "action_configs": attr.label_list()
+                "features": attr.label_list(
+                    doc = "List of extra compiler features.",
+                    providers = ["FeatureInfo"],
+                    default= [],
+                ),
+            },
+        ),
+        "linker": tag_class(
+            attrs = {
+                "name": attr.string()
+                "action_configs": attr.label_list()
+                "features": attr.label_list(
+                    doc = "List of extra linker features.",
                     providers = ["FeatureInfo"],
                     default= [],
                 ),
