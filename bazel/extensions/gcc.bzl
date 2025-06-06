@@ -23,10 +23,13 @@ def _gcc_impl(mctx):
             fail("Only the root module can use the 'gcc' extension")
 
     toolchain_info = None
-    features = []
+    c_action_configs = []
+    l_action_configs = []
+    c_features = []
+    l_features = []
 
     for mod in mctx.modules:
-        for tag in mod.tags.toolchain:
+        for tag in mod.tags.toolchain_pkg:
             toolchain_info = {
                 "name": tag.name,
                 "url": tag.url,
@@ -34,9 +37,17 @@ def _gcc_impl(mctx):
                 "sha256": tag.sha256,
             }
 
-        for tag in mod.tags.extra_features:
+        for tag in mod.tags.compiler:
+            for action in tag.action_configs:
+                c_action_configs.append(action)
             for feature in tag.features:
-                features.append(feature)
+                c_features.append(feature)
+        
+        for tag in mod.tags.linker:
+            for action in tag.action_configs:
+                l_action_configs.append(action)
+            for feature in tag.features:
+                l_features.append(feature)
 
     if toolchain_info:
         http_archive(
@@ -50,7 +61,11 @@ def _gcc_impl(mctx):
         gcc_toolchain(
             name = toolchain_info["name"],
             gcc_repo = "%s_gcc" % toolchain_info["name"],
-            feature_list = features,
+            c_action_configs = c_action_configs,
+            l_action_configs = l_action_configs,
+            c_features = c_features,
+            l_features = l_features,
+            
         )
 
     else:
