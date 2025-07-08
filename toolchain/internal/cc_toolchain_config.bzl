@@ -331,6 +331,19 @@ def _impl(ctx):
         ],
     )
 
+    pthread_feature = feature(
+        name = "use_pthread",
+        enabled = False,
+        flag_sets = [
+            flag_set(
+                actions = all_link_actions,
+                flag_groups = [
+                    flag_group(flags = ["-pthread"]),
+                ],
+            ),
+        ],
+    )
+
     # The order of the features is relevant, they are applied in this specific order.
     # A command line parameter from a feature at the end of the list will appear
     # after a command line parameter from a feature at the beginning of the list.
@@ -341,6 +354,7 @@ def _impl(ctx):
         cxx17_feature,
         cxx20_feature,
         default_link_flags_feature,
+        pthread_feature,
         minimal_warnings_feature,
         opt_feature,
         strict_warnings_feature,

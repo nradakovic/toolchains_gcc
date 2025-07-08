@@ -15,3 +15,8 @@ cc_binary(
     name = "main_cpp",
     srcs = ["main.cpp"],
 )
+
+cc_binary(
+    name = "main_pthread_cpp",
+    srcs = ["main_pthread.cpp"],
+)
